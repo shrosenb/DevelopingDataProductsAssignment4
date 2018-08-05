@@ -1,0 +1,12 @@
+name: MyCarsShinyApp
+title: MyCarsShinyApp
+username:
+account: shrosenb
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 395322
+bundleId: 1518930
+url: https://shrosenb.shinyapps.io/MyCarsShinyApp/
+when: 1533455387.58749
+asMultiple: FALSE
+asStatic: FALSE
