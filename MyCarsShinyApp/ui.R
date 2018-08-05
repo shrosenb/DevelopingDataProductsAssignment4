@@ -28,8 +28,7 @@ shinyUI(fluidPage(
       checkboxInput("cyl_8", "8", value = TRUE),
       br(),
       sliderInput("hp", "Engine HP Range:", min = min(mtcars$hp), max = max(mtcars$hp), value = c(min(mtcars$hp), max(mtcars$hp))),
-      br(),
-      img(src = "./car.jpg", width = "240px", height = "240px")
+      br()
     ),
 
     # Show a plot of the generated distribution

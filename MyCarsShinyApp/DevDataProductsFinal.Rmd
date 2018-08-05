@@ -9,25 +9,81 @@ output: ioslides_presentation
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-## R Markdown
+## Overview
+This is an R Markdown presentation of my Developing Data Products course assignment.
+In this assignment/Project, i have created a Shiny application which allows exploring cars horsepower (hp), cylinder count (cyl) and transmition type (am) on fuel consumption (mpg).
 
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
 
 ## Resources
 
-To check out the shiny exploration application, visit https://shrosenb.shinyapps.io/MyCarsShinyApp/
+###To check out the shiny exploration application, visit:
+https://shrosenb.shinyapps.io/MyCarsShinyApp/
 
-## Slide with R Output
+###For the source code (ui.R and server.R), visit:
+https://github.com/shrosenb/DevelopingDataProductsAssignment4
 
-```{r cars, echo = TRUE}
-summary(cars)
+
+## UI Code - MT Car Road Tests Data
+```{r eval=FALSE, echo=TRUE, warning=FALSE}
+shinyUI(fluidPage(
+  
+  sidebarLayout(
+    sidebarPanel(
+      h5(strong("Transmition Type:")),
+      checkboxInput("am_a", "Automatic", value = TRUE),
+      checkboxInput("am_m", "Manual", value = TRUE),
+      h5(strong("Cylinder Count:")),
+      checkboxInput("cyl_4", "4", value = TRUE),
+      checkboxInput("cyl_6", "6", value = TRUE),
+      checkboxInput("cyl_8", "8", value = TRUE),
+      sliderInput("hp", "Engine HP Range:", min = 1, max = 200, value = 100)
+    ),
+
+    mainPanel(
+       plotOutput("mpgPlot")
+    )
+  )
+))
 ```
 
-## Slide with Plot
+## Server Code - MT Car Road Tests Data
+```{r eval=FALSE, echo=TRUE, warning=FALSE}
+shinyServer(function(input, output) {
+  output$mpgPlot <- renderPlot({
+    # Transmition Auto/Manual
+    ams <- 99
+    if(input$am_a) {ams <- c(ams, 0)}
+    if(input$am_m) {ams <- c(ams, 1)}
+    # Number of cylinders
+    cyls <- 99
+    if(input$cyl_4) {cyls <- c(cyls, 4)}
+    if(input$cyl_6) {cyls <- c(cyls, 6)}
+    if(input$cyl_8) {cyls <- c(cyls, 8)}
+    # Horse power
+    hps  <- input$hp
+    pData <- subset(mtcars, (am %in% ams) & (cyl %in% cyls) & ((hp >= hps[1]) & (hp <= hps[2])))
+    pData$am <- factor(pData$am)
+    # Plot
+    p <- qplot(hp, mpg, data = pData, color = am, facets = am~cyl, main = "Scatterplots of MPG vs. Horsepower",
+               xlab = "Horsepower", ylab = "Miles per Gallon")
+    p <- p + geom_point(size = 3)
+    p <- p + theme(axis.title = element_text(face = "bold.italic", size = "12", color = "brown"), 
+                   legend.position = "top")
+    p
+  })
+})
+```
 
-```{r pressure}
-plot(pressure)
+
+
+## Server Code (plot) - MT Car Road Tests Data
+```{r warning=FALSE}
+    library(ggplot2)
+    mtcars$am <- factor(mtcars$am)
+    p <- qplot(hp, mpg, data = mtcars, color = am, facets = am~cyl, xlab = "Horsepower", ylab = "Miles per Gallon")
+    p <- p + geom_point(size = 3)
+    p <- p + theme(axis.title = element_text(face = "bold.italic", size = "12", color = "brown"), 
+                   legend.position = "top")
+    p
 ```
 
